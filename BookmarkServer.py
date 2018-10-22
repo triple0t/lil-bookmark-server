@@ -44,6 +44,7 @@
 import http.server
 import requests
 from urllib.parse import unquote, parse_qs
+import os
 
 memory = {}
 
@@ -86,7 +87,7 @@ def CheckURI(uri, timeout=5):
         return False
 
     # making an api request
-    r = requests.get(uri, timeout=timeout)
+    r = requests.get(uri)
 
     # checking the status code.
     if(int(r.status_code) == 200):
@@ -175,6 +176,7 @@ class Shortener(http.server.BaseHTTPRequestHandler):
             self.wfile.write("Sorry that Page could not be Found. <br/> Please <a href='/'> Try Again </a>".encode())
 
 if __name__ == '__main__':
-    server_address = ('', 8000)
+    port = int(os.environ.get('PORT', 8000))
+    server_address = ('', port)
     httpd = http.server.HTTPServer(server_address, Shortener)
     httpd.serve_forever()
